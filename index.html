@@ -57,7 +57,7 @@
     $(document).ready(function () {
 
         if (window.DeviceMotionEvent) {
-            window.addEventListener.('devicemotion', deviceMotionHandler);
+            window.addEventListener('devicemotion', deviceMotionHandler, false);
         } else {
             alert('你的设备不支持摇一摇');
         }
@@ -68,7 +68,7 @@
         var x, y, z, last_x = 0, last_y = 0, last_z = 0;
 
         function deviceMotionHandler(eventData) {
-            var acceleration = eventData.originalEvent.accelerationIncludingGravity;
+            var acceleration = eventData.accelerationIncludingGravity;
             var curTime = new Date().getTime();
             if ((curTime - last_update) > 10) {
                 var diffTime = curTime - last_update;
