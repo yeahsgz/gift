@@ -50,52 +50,58 @@
         晃动屏幕
     </div>
     <div class="font-size32 text-align-c">领取我的专属礼物</div>
+    <div class="j-show-result"></div>
 </div>
 <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        var speed = 25;
+        var debounce = function (fn, delay) {
+            var timer = null;
 
-        var x = t = z = lastX = lastY = lastZ = 0;
+            return function () {
 
-        var allowDevice = true;
-        //判断系统是否支持html5摇一摇的相关属性
+                var context = this;
+                var args = arguments;
+
+                clearTimeout(timer);
+
+                timer = setTimeout(function () {
+                    fn.apply(context, args)
+                }, delay)
+            };
+        };
+
         if (window.DeviceMotionEvent) {
-
-            window.addEventListener('devicemotion',
-                    function () {
-                        var acceleration = event.accelerationIncludingGravity;
-                        x = acceleration.x;
-                        y = acceleration.y;
-                        if (Math.abs(x - lastX) > speed || Math.abs(y - lastY) > speed) {
-
-                            // 判断要不要执行
-                            if (!allowDevice)return false;
-
-                            allowDevice = true;
-
-
-                            //手机震动1秒
-                            if (navigator.vibrate) {
-                                navigator.vibrate(1000);//震动1000毫秒
-                            } else if (navigator.webkitVibrate) {
-                                navigator.webkitVibrate(1000);
-                            }
-
-                            //打开弹窗
-                            setTimeout(function () {
-                                alert('恭喜你摇到了');
-                            }, 1000);
-                        }
-                        ;
-                        lastX = x;
-                        lastY = y;
-                    }, false);
+            $(window).on('devicemotion', debounce(deviceMotionHandler, 20));
+        } else {
+            alert('你的设备不支持摇一摇');
         }
-        else {
-            alert('不支持摇一摇');
+
+
+        var SHAKE_THRESHOLD = 800;
+        var last_update = 0;
+        var x, y, z, last_x = 0, last_y = 0, last_z = 0;
+
+        function deviceMotionHandler(eventData) {
+            var acceleration = eventData.originalEvent.accelerationIncludingGravity;
+            var curTime = new Date().getTime();
+            if ((curTime - last_update) > 10) {
+                var diffTime = curTime - last_update;
+                last_update = curTime;
+                x = acceleration.x;
+                y = acceleration.y;
+                z = acceleration.z;
+                var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+                if (speed > SHAKE_THRESHOLD) {
+                    $('.j-show-result').append("你中奖啦！");  // Do something
+                }
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
         }
-    });
+    })
+
 </script>
 </body>
 </html>
