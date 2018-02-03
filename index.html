@@ -56,24 +56,8 @@
 <script>
     $(document).ready(function () {
 
-        var debounce = function (fn, delay) {
-            var timer = null;
-
-            return function () {
-
-                var context = this;
-                var args = arguments;
-
-                clearTimeout(timer);
-
-                timer = setTimeout(function () {
-                    fn.apply(context, args)
-                }, delay)
-            };
-        };
-
         if (window.DeviceMotionEvent) {
-            $(window).on('devicemotion', debounce(deviceMotionHandler, 20));
+            window.addEventListener.('devicemotion', deviceMotionHandler);
         } else {
             alert('你的设备不支持摇一摇');
         }
@@ -94,7 +78,7 @@
                 z = acceleration.z;
                 var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
                 if (speed > SHAKE_THRESHOLD) {
-                    $('.j-show-result').append(localGift.giftInfo);  // Do something
+                    $('.j-show-result').append(JSON.stringify(localGift.giftInfo));  // Do something
                 }
                 last_x = x;
                 last_y = y;
