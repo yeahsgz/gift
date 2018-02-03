@@ -52,9 +52,10 @@
     <div class="font-size32 text-align-c">领取我的专属礼物</div>
     <div class="j-show-result"></div>
 </div>
-<script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="./js/jq.js"></script>
 <script>
     $(document).ready(function () {
+
         var debounce = function (fn, delay) {
             var timer = null;
 
@@ -93,13 +94,45 @@
                 z = acceleration.z;
                 var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
                 if (speed > SHAKE_THRESHOLD) {
-                    $('.j-show-result').append("你中奖啦！");  // Do something
+                    $('.j-show-result').append(localGift.giftInfo);  // Do something
                 }
                 last_x = x;
                 last_y = y;
                 last_z = z;
             }
         }
+
+        var localGift = {
+            giftInfo: null,
+            init: function () {
+                this.getGift();
+            },
+            getGift: function () {
+                try {
+                    this.giftInfo = JSON.parse(localStorage.getItem('ownGift'));
+                } catch (e) {
+                    console.log('你的设备不支持localStorage', e);
+                }
+                this.giftInfo || this.getRandomGift();
+            },
+            setGift: function (data) {
+                try {
+                    localStorage.setItem('ownGift', JSON.stringify(data));
+                } catch (e) {
+                    console.log('你的设备不支持localStorage', e);
+                }
+            },
+            getRandomGift: function () {
+                var that = this;
+                $.getJSON('./data/giftArr.json', function (data) {
+                    var randomIndex = Math.floor(Math.random() * data.length);
+                    that.giftInfo = data[randomIndex];
+                    that.setGift(that.giftInfo);
+                });
+            }
+        };
+        localGift.init();
+
     })
 
 </script>
