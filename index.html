@@ -15,10 +15,25 @@
             padding :0;
         }
 
+
         .gift-logo-wrap{
             margin :20px auto;
             width  :280px;
             height :280px;
+            will-change:transform;
+        }
+        
+        @keyframes rotate{
+            from{
+                transform:rotate(0deg);
+            }
+            to{
+                transform:rotate(360deg);
+            }
+        }
+
+        .rotate{
+            animation: rotate 2s infinite;
         }
 
         .gift-logo{
@@ -44,7 +59,7 @@
 
 <div class="">
     <div class="gift-logo-wrap">
-        <img class="gift-logo" src="http://iph.href.lu/400x400" alt=""/>
+        <img class="gift-logo j-gift-logo" src="http://iph.href.lu/400x400" alt=""/>
     </div>
     <div class="font-size36 text-align-c">
         晃动屏幕
@@ -56,14 +71,45 @@
 <script>
     $(document).ready(function () {
 
+        var debounce = function (onStartCb, onEndCb, delay) {
+            var _timer;
+            var startCbStatus = false;
+            return function () {
+                var ctx = this;
+                var args = arguments;
+
+                if (!startCbStatus) {
+                    startCbStatus = true;
+                    onStartCb.apply(ctx, args);
+                }
+
+                clearTimeout(_timer);
+                _timer = setTimeout(function () {
+                    onEndCb.apply(ctx, args)
+                }, delay || 0);
+            }
+        };
+
+
         if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', deviceMotionHandler, false);
+            window.addEventListener('devicemotion', debounce(bindDeviceMotionStart, deviceMotionHandler, 100), false);
         } else {
             alert('你的设备不支持摇一摇');
         }
 
 
-        var SHAKE_THRESHOLD = 800;
+        //摇一摇开始时的回调函数
+        var bindDeviceMotionStart = function () {
+            $('.j-gift-logo').addClass('rotate');
+        };
+
+        //摇一摇结束后的回调函数
+        var bindDeviceMotionEnd = function () {
+
+        };
+
+
+        var SHAKE_THRESHOLD = 4000;
         var last_update = 0;
         var x, y, z, last_x = 0, last_y = 0, last_z = 0;
 
