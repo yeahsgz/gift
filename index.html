@@ -22,19 +22,6 @@
             will-change :transform;
         }
 
-        @keyframes rotate{
-            from{
-                transform :rotate(0deg);
-            }
-            to{
-                transform :rotate(360deg);
-            }
-        }
-
-        .rotate{
-            animation :rotate 2s linear infinite;
-        }
-
         .gift-logo{
             display :block;
             width   :100%;
@@ -52,11 +39,39 @@
         .font-size32{
             font-size :24px;
         }
+
+        @keyframes rotate{
+            from{
+                transform :rotate(0deg);
+            }
+            to{
+                transform :rotate(360deg);
+            }
+        }
+
+        @-webkit-keyframes rotate{
+            from{
+                transform :rotate(0deg);
+            }
+            to{
+                transform :rotate(360deg);
+            }
+        }
+
+        .rotate{
+            -webkit-animation :rotate 2s linear infinite;
+            animation         :rotate 2s linear infinite;
+        }
+
+        .hide{
+            display :none;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="">
+<div class="j-ready">
     <div class="gift-logo-wrap">
         <img class="gift-logo j-gift-logo" src="http://iph.href.lu/400x400" alt=""/>
     </div>
@@ -66,10 +81,31 @@
     <div class="font-size32 text-align-c">领取我的专属礼物</div>
     <div class="j-show-result"></div>
 </div>
+
+<div class="text-align-c j-get hide">
+    <h2>我的新年专属礼物是</h2>
+
+    <div class="gift-logo-wrap">
+        <img class="gift-logo j-gift-class" src="" alt=""/>
+    </div>
+    <div>
+        有了她
+        <div class="gift-desc j-gift-desc">今年你会顺丰顺水，心想事成</div>
+    </div>
+    <div>
+        <button>生成我的礼物图</button>
+    </div>
+    <div>
+        <p>分享给他/她/它</p>
+
+        <p>索要礼物吧</p>
+    </div>
+</div>
+
 <script src="./js/jq.js"></script>
 <script>
     $(document).ready(function () {
-
+        //防抖
         var debounce = function (onStartCb, onEndCb, delay) {
             var _timer;
             var startCbStatus = false;
@@ -90,35 +126,42 @@
         };
 
         //摇一摇开始时的回调函数
-        var bindDeviceMotionStart = function (eventData) {
-            deviceMotionHandler(eventData, function () {
-                $('.j-gift-logo').addClass('rotate');
-            });
+        var bindDeviceMotionStart = function () {
+            $('.j-gift-logo').addClass('rotate');
         };
 
         //摇一摇结束后的回调函数
-        var bindDeviceMotionEnd = function (eventData) {
-            deviceMotionHandler(eventData, function () {
-                $('.j-show-result').append(JSON.stringify(localGift.giftInfo));
-            });
+        var bindDeviceMotionEnd = function () {
+
+            window.removeEventListener('devicemotion',deviceMotionHandler,false);
+
+            $('.j-gift-class').attr('src', localGift.giftInfo.imgUrl);
+            $('.j-gift-desc').text(localGift.giftInfo.desc);
+
+            setTimeout(function () {
+                $('.j-ready').addClass('hide');
+                $('.j-get').removeClass('hide');
+            }, 1000);
+
         };
 
+        var deviceMotionHandlerCb = debounce(bindDeviceMotionStart, bindDeviceMotionEnd, 300);
 
         if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', debounce(bindDeviceMotionStart, bindDeviceMotionEnd, 100), false);
+            window.addEventListener('devicemotion', deviceMotionHandler, false);
         } else {
             alert('你的设备不支持摇一摇');
         }
 
 
-        var SHAKE_THRESHOLD = 4000;
+        var SHAKE_THRESHOLD = 10000;
         var last_update = 0;
         var x, y, z, last_x = 0, last_y = 0, last_z = 0;
 
-        function deviceMotionHandler(eventData, cb) {
+        function deviceMotionHandler(eventData) {
             var acceleration = eventData.accelerationIncludingGravity;
             var curTime = new Date().getTime();
-            if ((curTime - last_update) > 10) {
+            if ((curTime - last_update) > 20) {
                 var diffTime = curTime - last_update;
                 last_update = curTime;
                 x = acceleration.x;
@@ -126,7 +169,7 @@
                 z = acceleration.z;
                 var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
                 if (speed > SHAKE_THRESHOLD) {
-                    cb();
+                    deviceMotionHandlerCb();
                 }
                 last_x = x;
                 last_y = y;
