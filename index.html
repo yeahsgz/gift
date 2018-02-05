@@ -15,25 +15,24 @@
             padding :0;
         }
 
-
         .gift-logo-wrap{
-            margin :20px auto;
-            width  :280px;
-            height :280px;
-            will-change:transform;
+            margin      :20px auto;
+            width       :280px;
+            height      :280px;
+            will-change :transform;
         }
-        
+
         @keyframes rotate{
             from{
-                transform:rotate(0deg);
+                transform :rotate(0deg);
             }
             to{
-                transform:rotate(360deg);
+                transform :rotate(360deg);
             }
         }
 
         .rotate{
-            animation: rotate 2s infinite;
+            animation :rotate 2s linear infinite;
         }
 
         .gift-logo{
@@ -90,30 +89,33 @@
             }
         };
 
-
-        if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', debounce(bindDeviceMotionStart, deviceMotionHandler, 100), false);
-        } else {
-            alert('你的设备不支持摇一摇');
-        }
-
-
         //摇一摇开始时的回调函数
-        var bindDeviceMotionStart = function () {
-            $('.j-gift-logo').addClass('rotate');
+        var bindDeviceMotionStart = function (eventData) {
+            deviceMotionHandler(eventData, function () {
+                $('.j-gift-logo').addClass('rotate');
+            });
         };
 
         //摇一摇结束后的回调函数
-        var bindDeviceMotionEnd = function () {
-
+        var bindDeviceMotionEnd = function (eventData) {
+            deviceMotionHandler(eventData, function () {
+                $('.j-show-result').append(JSON.stringify(localGift.giftInfo));
+            });
         };
+
+
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', debounce(bindDeviceMotionStart, bindDeviceMotionEnd, 100), false);
+        } else {
+            alert('你的设备不支持摇一摇');
+        }
 
 
         var SHAKE_THRESHOLD = 4000;
         var last_update = 0;
         var x, y, z, last_x = 0, last_y = 0, last_z = 0;
 
-        function deviceMotionHandler(eventData) {
+        function deviceMotionHandler(eventData, cb) {
             var acceleration = eventData.accelerationIncludingGravity;
             var curTime = new Date().getTime();
             if ((curTime - last_update) > 10) {
@@ -124,7 +126,7 @@
                 z = acceleration.z;
                 var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
                 if (speed > SHAKE_THRESHOLD) {
-                    $('.j-show-result').append(JSON.stringify(localGift.giftInfo));  // Do something
+                    cb();
                 }
                 last_x = x;
                 last_y = y;
