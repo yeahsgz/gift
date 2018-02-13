@@ -9,38 +9,126 @@
     <title>摇出你的新年礼物</title>
     <meta name="format-detection" content="telephone=no">
     <meta name="wap-font-scale" content="no">
+    <script>
+        !function (N, M) {
+            function L() {
+                var a = I.getBoundingClientRect().width;
+                a / F > 540 && (a = 540 * F);
+                var d = a / 10;
+                I.style.fontSize = d + "px", D.rem = N.rem = d
+            }
+
+            var K, J = N.document, I = J.documentElement, H = J.querySelector('meta[name="viewport"]'), G = J.querySelector('meta[name="flexible"]'), F = 0, E = 0, D = M.flexible || (M.flexible = {});
+            if (H) {
+                console.warn("将根据已有的meta标签来设置缩放比例");
+                var C = H.getAttribute("content").match(/initial\-scale=([\d\.]+)/);
+                C && (E = parseFloat(C[1]), F = parseInt(1 / E))
+            } else {
+                if (G) {
+                    var B = G.getAttribute("content");
+                    if (B) {
+                        var A = B.match(/initial\-dpr=([\d\.]+)/), z = B.match(/maximum\-dpr=([\d\.]+)/);
+                        A && (F = parseFloat(A[1]), E = parseFloat((1 / F).toFixed(2))), z && (F = parseFloat(z[1]), E = parseFloat((1 / F).toFixed(2)))
+                    }
+                }
+            }
+            if (!F && !E) {
+                var y = N.navigator.userAgent, x = (!!y.match(/android/gi), !!y.match(/iphone/gi)), w = x && !!y.match(/OS 9_3/), v = N.devicePixelRatio;
+                F = x && !w ? v >= 3 && (!F || F >= 3) ? 3 : v >= 2 && (!F || F >= 2) ? 2 : 1 : 1, E = 1 / F
+            }
+            if (I.setAttribute("data-dpr", F), !H) {
+                if (H = J.createElement("meta"), H.setAttribute("name", "viewport"), H.setAttribute("content", "initial-scale=" + E + ", maximum-scale=" + E + ", minimum-scale=" + E + ", user-scalable=no"), I.firstElementChild) {
+                    I.firstElementChild.appendChild(H)
+                } else {
+                    var u = J.createElement("div");
+                    u.appendChild(H), J.write(u.innerHTML)
+                }
+            }
+            N.addEventListener("resize", function () {
+                clearTimeout(K), K = setTimeout(L, 300)
+            }, !1), N.addEventListener("pageshow", function (b) {
+                b.persisted && (clearTimeout(K), K = setTimeout(L, 300))
+            }, !1), "complete" === J.readyState ? J.body.style.fontSize = 12 * F + "px" : J.addEventListener("DOMContentLoaded", function () {
+                J.body.style.fontSize = 12 * F + "px"
+            }, !1), L(), D.dpr = N.dpr = F, D.refreshRem = L, D.rem2px = function (d) {
+                var c = parseFloat(d) * this.rem;
+                return "string" == typeof d && d.match(/rem$/) && (c += "px"), c
+            }, D.px2rem = function (d) {
+                var c = parseFloat(d) / this.rem;
+                return "string" == typeof d && d.match(/px$/) && (c += "rem"), c
+            }
+        }(window, window.lib || (window.lib = {}));
+    </script>
     <link rel="stylesheet" href="./css/animate.css"/>
     <style>
         *{
-            margin  :0;
-            padding :0;
+            margin     :0;
+            padding    :0;
+            box-sizing :border-box;
         }
 
-        .gift-logo-wrap{
-            margin      :20px auto;
-            width       :280px;
-            height      :280px;
+        html, body{
+            width  :100%;
+            height :100%;
+        }
+
+        a{
+            text-decoration :none;
+            font-size       :12px;
+        }
+
+        .hide{
+            display :none;
+        }
+
+        body{
+            background      :url('./img/bg1.jpg') top no-repeat;
+            background-size :100% 100%;
+        }
+
+        .gift-box-wrap{
+            margin      :3.2rem auto 3.4rem;
+            width       :4.2rem;
+            height      :4.2rem;
             will-change :transform;
             text-align  :center;
+            position    :relative;
         }
 
-        .gift-logo{
-            margin-top :90px;
-            display    :inline-block;
-            width      :90px;
-            height     :90px;
+        .gift-box{
+            display  :inline-block;
+            width    :4.2rem;
+            height   :4.2rem;
+            position :relative;
+            left     :-0.3rem;
         }
 
-        .text-align-c{
-            text-align :center;
+        .name-ipt{
+            display       :block;
+            margin        :0 auto;
+            width         :4.6rem;
+            height        :24px;
+            line-height   :24px;
+            border-radius :8px;
+            padding       :0 14px;
+            border        :navajowhite;
+            text-align    :center;
         }
 
-        .font-size36{
-            font-size :28px;
+        .get-gift-btn{
+            display       :block;
+            text-align    :center;
+            width         :4.6rem;
+            height        :24px;
+            line-height   :24px;
+            background    :red;
+            margin        :10px auto;
+            color         :#fff;
+            border-radius :8px;
         }
 
-        .font-size32{
-            font-size :24px;
+        .share-gift{
+            position :fixed; width :100%; height :100%; top :0; left :0; z-index :100;
         }
 
         @keyframes rotate{
@@ -66,9 +154,6 @@
             animation         :rotate 2s linear infinite;
         }
 
-        .hide{
-            display :none;
-        }
 
     </style>
     <style>
@@ -167,124 +252,66 @@
     </style>
 </head>
 <body>
-
-<div class="j-ready animated hide">
-    <div class="gift-logo-wrap j-gift-logo-wrap">
-        <img class="gift-logo animation-target" src="http://iph.href.lu/400x400" alt=""/>
+<div class="j-ready animated" style="overflow:hidden">
+    <div class="gift-box-wrap j-gift-logo-wrap">
+        <img class="gift-box animated j-gift-box" src="./img/gift-box.png" alt=""/>
     </div>
-    <div class="font-size36 text-align-c">
-        晃动屏幕
+    <div>
+        <input type="text" placeholder="请输入你的姓名" class="name-ipt j-name-ipt"/>
     </div>
-    <div class="font-size32 text-align-c">领取我的专属礼物</div>
-    <div class="j-show-result"></div>
+    <a class="get-gift-btn j-get-gift-btn" href="javascript:void(0)">领取我的本命礼物</a>
 </div>
 
-<div class="text-align-c j-get  animated">
-    <h2>我的新年专属礼物是</h2>
-
-    <div class="gift-logo-wrap">
-        <img class="gift-logo j-gift-class" src="" alt=""/>
-    </div>
-    <div>
-        有了她
-        <div class="gift-desc j-gift-desc">今年你会顺丰顺水，心想事成</div>
-    </div>
-    <div>
-        <button class="create-gift j-create-gift">生成我的礼物图</button>
-    </div>
-    <div>
-        <p>分享给他/她/它</p>
-
-        <p>索要礼物吧</p>
-    </div>
-</div>
 
 <div class="canvas-wrap j-canvas-wrap hide">
-    <canvas class="j-canvas" width="280" height="480" id="canvas"></canvas>
+    <canvas class="j-canvas" id="canvas" style="position:fixed;width: 100%;height: 100%;"></canvas>
 </div>
+<img class="hide share-gift animated j-share-gift" src=""/>
 
 <script src="./js/jq.js"></script>
 <script>
     $(document).ready(function () {
-        //防抖
-        var debounce = function (onStartCb, onEndCb, delay) {
-            var _timer;
-            var startCbStatus = false;
-            return function () {
-                var ctx = this;
-                var args = arguments;
 
-                if (!startCbStatus) {
-                    startCbStatus = true;
-                    onStartCb.apply(ctx, args);
-                }
+        var dWidth = $(window).width();
+        var dHeight = $(window).height();
+        $('body').css({
+            width: dWidth,
+            height: dHeight
+        });
 
-                clearTimeout(_timer);
-                _timer = setTimeout(function () {
-                    onEndCb.apply(ctx, args)
-                }, delay || 0);
-            }
-        };
-
-        //摇一摇开始时的回调函数
-        var bindDeviceMotionStart = function () {
-            $('.j-gift-logo-wrap').addClass('rotate');
-        };
-
-        //摇一摇结束后的回调函数
-        var bindDeviceMotionEnd = function () {
-
-            window.removeEventListener('devicemotion', deviceMotionHandler, false);
-
-            $('.j-gift-class').attr('src', localGift.giftInfo.imgUrl);
-            $('.j-gift-desc').text(localGift.giftInfo.desc);
+        var bindAnimation = function () {
 
             setTimeout(function () {
-                $('.j-ready').addClass('zoomOutRight');
+                $('.j-gift-box').addClass('zoomOut');
             }, 1000);
 
             setTimeout(function () {
-                $('.j-ready').addClass('hide');
-                $('.j-get').removeClass('hide').addClass('zoomIn');
+                $('.j-share-gift').removeClass('hide').addClass('zoomIn');
             }, 2000)
 
         };
 
-        var deviceMotionHandlerCb = debounce(bindDeviceMotionStart, bindDeviceMotionEnd, 300);
+        var $name = $('.j-name-ipt');
 
-        if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', deviceMotionHandler, false);
-        } else {
-            alert('你的设备不支持摇一摇');
-        }
-
-
-        var SHAKE_THRESHOLD = 10000;
-        var last_update = 0;
-        var x, y, z, last_x = 0, last_y = 0, last_z = 0;
-
-        function deviceMotionHandler(eventData) {
-            var acceleration = eventData.accelerationIncludingGravity;
-            var curTime = new Date().getTime();
-            if ((curTime - last_update) > 20) {
-                var diffTime = curTime - last_update;
-                last_update = curTime;
-                x = acceleration.x;
-                y = acceleration.y;
-                z = acceleration.z;
-                var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
-                if (speed > SHAKE_THRESHOLD) {
-                    deviceMotionHandlerCb();
-                }
-                last_x = x;
-                last_y = y;
-                last_z = z;
+        $('.j-get-gift-btn').on('click', function () {
+            var name = $name.val();
+            if (!name) {
+                return $name.focus();
             }
-        }
+            bindAnimation();
+
+            localGift.setName(name, drawGift);
+        });
+
 
         var localGift = {
             giftInfo: null,
             init: function () {
+                this.getGift();
+            },
+            setName: function (name, cb) {
+                this.name = name;
+                this.cb = cb;
                 this.getGift();
             },
             getGift: function () {
@@ -293,7 +320,11 @@
                 } catch (e) {
                     console.log('你的设备不支持localStorage', e);
                 }
-                this.giftInfo || this.getRandomGift();
+                if (this.giftInfo && this.giftInfo.name == this.name) {
+                    this.cb();
+                } else {
+                    this.getRandomGift();
+                }
             },
             setGift: function (data) {
                 try {
@@ -307,65 +338,107 @@
                 $.getJSON('./data/giftArr.json', function (data) {
                     var randomIndex = Math.floor(Math.random() * data.length);
                     that.giftInfo = data[randomIndex];
+                    that.giftInfo.name = that.name;
                     that.setGift(that.giftInfo);
+                    that.cb();
                 });
             }
         };
-        localGift.init();
 
-        (function () {
+
+        function drawGift() {
+            var giftSize = 160;
+
+            if (dWidth > 320 && dWidth <= 375) {
+                giftSize = 180;
+            }
+            if (dWidth > 375) {
+                giftSize = 200;
+            }
             var canvas = document.getElementById('canvas');
+            canvas.width = dWidth;
+            canvas.height = dHeight;
             var ctx = canvas.getContext('2d');
-            /* var image = new Image();
-             image.onload = function () {
-             ctx.drawImage(image, 0, 0, 280, 280);
-             };
-             image.onerror = function () {
+            var count = 0;
 
-             };
+            //绘制背景
+            var bg = new Image();
+            bg.onload = function () {
+                count++;
+                startDraw();
+            };
+            bg.src = './img/bg2.jpg';
 
-             image.src = localGift.giftInfo.imgUrl;
-             */
+
+            //绘制礼物
+            var gift = new Image();
+            gift.onload = function () {
+                getGiftSize();
+                count++;
+                startDraw();
+            };
+            gift.src = localGift.giftInfo.imgUrl;
+
+            //绘制二维码
             var erweima = new Image();
             erweima.onload = function () {
-                ctx.drawImage(erweima, 0, 300, 120, 120);
+                count++;
+                startDraw();
             };
+            erweima.src = './img/erweima.png';
 
-            erweima.src = './erweima.png';
+            function startDraw() {
+                if (count >= 3) {
+                    var title = localGift.giftInfo.name + '的专属礼物是';
+                    ctx.drawImage(bg, 0, 0, dWidth, dHeight);
+                    ctx.font = "20px Georgia";
+                    ctx.fillText(title, getXToMiddle(title.length * 20), getTop(0.2), 160);
 
-            $('.j-create-gift').on('click', function () {
-                canvas2image(canvas)
-            });
-
-            var canvas2image = (function () {
-
-                var c = function (i) {
-                    i = i.toLowerCase().replace(/jpg/i, "jpeg");
-                    var j = i.match(/png|jpeg|bmp|gif/)[0];
-                    return "image/" + j
-                };
-
-                var e = function (l, i) {
-                    var j = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-                    j.href = l;
-                    j.download = i;
-                    var k = document.createEvent("MouseEvents");
-                    k.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    j.dispatchEvent(k)
-                };
-
-                return function (i) {
-                    var j = "png";
-                    var l = i.toDataURL(j);
-                    l = l.replace(c(j), "image/octet-stream");
-                    e(l, "own_gift_" + (new Date()).getTime() + "." + j)
-
-                };
-
-            })();
-        })();
+                    ctx.drawImage(gift, getXToMiddle(gift.width), getTop(0.2, 30), gift.width, gift.height);
 
 
+                    ctx.font = "12px Georgia";
+                    ctx.fillText(localGift.giftInfo.desc, getXToMiddle(localGift.giftInfo.desc.length * 10), getTop(0.2, 30, gift.height, 30), 160);
+
+                    ctx.drawImage(erweima, dWidth * 0.2, getTop(0.66), 80, 80);
+
+                    ctx.fillText("长按发送给朋友", dWidth * 0.2 + 110, getTop(0.66, 46), 160);
+
+
+                    var img = canvas.toDataURL('image/png');
+                    $('.j-share-gift').attr('src', img);
+                }
+            }
+
+            function getTop() {
+                var args = [].slice.apply(arguments);
+                var total = 0;
+                args.forEach(function (v, i) {
+                    total += v < 1 ? v * dHeight : v;
+                });
+                return total;
+            }
+
+            function getGiftSize() {
+                var width = gift.width;
+                var height = gift.height;
+                if (width >= height) {
+                    gift.width = giftSize;
+                    gift.height = giftSize * height / width;
+                } else {
+                    gift.height = giftSize;
+                    gift.width = giftSize * width / height;
+                }
+            }
+
+            function getXToMiddle(w) {
+                return (dWidth - w) / 2;
+            }
+
+            function getYByPercent(y) {
+                return y * dHeight;
+            }
+        }
     });
 
 
