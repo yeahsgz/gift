@@ -392,17 +392,19 @@
                     var title = localGift.giftInfo.name + '的专属礼物是';
                     ctx.drawImage(bg, 0, 0, dWidth, dHeight);
                     ctx.font = "20px Georgia";
-                    ctx.fillText(title, getXToMiddle(title.length * 20), getTop(0.2), 160);
+                    ctx.textAlign="center";
+                    ctx.fillText(title, dWidth/2-1, getTop(0.2), 160);
 
                     ctx.drawImage(gift, getXToMiddle(gift.width), getTop(0.2, 30), gift.width, gift.height);
 
 
                     ctx.font = "12px Georgia";
-                    ctx.fillText(localGift.giftInfo.desc, getXToMiddle(localGift.giftInfo.desc.length * 10), getTop(0.2, 30, gift.height, 30), 160);
+                    ctx.fillText(localGift.giftInfo.desc, dWidth/2-1, getTop(0.2, 30, gift.height, 30), 160);
 
                     ctx.drawImage(erweima, dWidth * 0.2, getTop(0.66), 80, 80);
 
-                    ctx.fillText("长按发送给朋友", dWidth * 0.2 + 110, getTop(0.66, 46), 160);
+                    ctx.textAlign="left";
+                    ctx.fillText("长按发送给朋友", dWidth * 0.2 + 90, getTop(0.66, 46), 160);
 
 
                     var img = canvas.toDataURL('image/png');
