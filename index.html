@@ -403,8 +403,8 @@
                     ctx.fillText(localGift.giftInfo.title, dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18), 180);
 
                     ctx.font = "12px Georgia";
-                    ctx.fillText(localGift.giftInfo.desc, dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18, 18), 180);
-
+//                    ctx.fillText(localGift.giftInfo.desc, dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18, 18), 180);
+                    canvasTextAutoLine('你是我日复一日的梦想，我要对你做，春天对樱桃树做得事情！',ctx,180,dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18, 18),18);
                     ctx.drawImage(erweima, dWidth * 0.2, getTop(0.66), 80, 80);
 
                     ctx.textAlign = "left";
@@ -441,14 +441,25 @@
             function getXToMiddle(w) {
                 return (dWidth - w) / 2;
             }
+        }
 
-            function getYByPercent(y) {
-                return y * dHeight;
+        function canvasTextAutoLine(str, ctx, maxWidth, initX, initY, lineHeight) {
+            var lineWidth = 0;
+            var lastSubStrIndex = 0;
+            for (let i = 0; i < str.length; i++) {
+                lineWidth += ctx.measureText(str[i]).width;
+                if (lineWidth > maxWidth) {//减去initX,防止边界出现的问题
+                    ctx.fillText(str.substring(lastSubStrIndex, i), initX, initY);
+                    initY += lineHeight;
+                    lineWidth = 0;
+                    lastSubStrIndex = i;
+                }
+                if (i == str.length - 1) {
+                    ctx.fillText(str.substring(lastSubStrIndex, i + 1), initX, initY);
+                }
             }
         }
     });
-
-
 </script>
 </body>
 </html>
