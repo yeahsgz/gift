@@ -87,7 +87,7 @@
         }
 
         .gift-box-wrap{
-            margin      :3.2rem auto 3.4rem;
+            margin      :2.8rem auto 0.8rem;
             width       :4.2rem;
             height      :4.2rem;
             will-change :transform;
@@ -105,7 +105,7 @@
 
         .name-ipt{
             display       :block;
-            margin        :0 auto;
+            margin        :0 auto 1.6rem;
             width         :4.6rem;
             height        :24px;
             line-height   :24px;
@@ -295,7 +295,7 @@
 
         $('.j-get-gift-btn').on('click', function () {
             var name = $name.val();
-            if (!name) {
+            if (!name || name.length > 4) {
                 return $name.focus();
             }
             bindAnimation();
@@ -347,13 +347,13 @@
 
 
         function drawGift() {
-            var giftSize = 160;
+            var giftSize = 140;
 
             if (dWidth > 320 && dWidth <= 375) {
-                giftSize = 180;
+                giftSize = 160;
             }
             if (dWidth > 375) {
-                giftSize = 200;
+                giftSize = 180;
             }
             var canvas = document.getElementById('canvas');
             canvas.width = dWidth;
@@ -391,20 +391,25 @@
                 if (count >= 3) {
                     var title = localGift.giftInfo.name + '的专属礼物是';
                     ctx.drawImage(bg, 0, 0, dWidth, dHeight);
-                    ctx.font = "20px Georgia";
-                    ctx.textAlign="center";
-                    ctx.fillText(title, dWidth/2-1, getTop(0.2), 160);
+                    ctx.font = "20px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText(title, dWidth / 2 - 1, getTop(0.16), 160);
 
-                    ctx.drawImage(gift, getXToMiddle(gift.width), getTop(0.2, 30), gift.width, gift.height);
+                    ctx.drawImage(gift, getXToMiddle(gift.width), getTop(0.16, 24), gift.width, gift.height);
 
+
+                    ctx.font = "14px Georgia";
+
+                    ctx.fillText(localGift.giftInfo.title, dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18), 180);
 
                     ctx.font = "12px Georgia";
-                    ctx.fillText(localGift.giftInfo.desc, dWidth/2-1, getTop(0.2, 30, gift.height, 30), 160);
+                    ctx.fillText(localGift.giftInfo.desc, dWidth / 2 - 1, getTop(0.16, 24, gift.height, 18, 18), 180);
 
                     ctx.drawImage(erweima, dWidth * 0.2, getTop(0.66), 80, 80);
 
-                    ctx.textAlign="left";
-                    ctx.fillText("长按发送给朋友", dWidth * 0.2 + 90, getTop(0.66, 46), 160);
+                    ctx.textAlign = "left";
+                    ctx.fillText("扫描二维码", dWidth * 0.2 + 120, getTop(0.66, 30), 160);
+                    ctx.fillText("领取我的新年专属礼物", dWidth * 0.2 + 90, getTop(0.66, 60), 160);
 
 
                     var img = canvas.toDataURL('image/png');
